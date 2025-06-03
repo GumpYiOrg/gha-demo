@@ -51,9 +51,6 @@ jobs:
   #         path: test.json
   build:
     #needs: test
-    permissions:
-      id-token: write
-      contents: read
     runs-on: ubuntu-latest
     outputs:
       script-file: ${{ steps.publish.outputs.script-file }}
@@ -75,13 +72,11 @@ jobs:
           name: dist-artifacts
           path: |
             dist
-      - name: Get AWS permissions
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: ap-southeast-1
   deploy:
     needs: build
+    permissions:
+      id-token: write
+      contents: read
     uses: ./.github/workflows/reuseable.yml
     with:
       artifact-name: dist-artifacts
